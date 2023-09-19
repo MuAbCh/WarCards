@@ -1,0 +1,137 @@
+//
+//  ContentView.swift
+//  WarCards
+//
+//  Created by Muhammad Choudhary on 2023-07-04.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    
+    @State var playercard = "card7"
+    @State var cpucard = "card4"
+    @State var playerscore = 0
+    @State var cpuscore = 0
+    @State var didWin = false
+    @State var didLose = false
+    
+    var body: some View {
+        
+        ZStack {
+            Image("background-cloth")
+                .resizable()
+                .ignoresSafeArea()
+            
+            VStack {
+                Spacer()
+                Image("logo")
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    Image(playercard)
+                    Spacer()
+                    Image(cpucard)
+                    Spacer()
+                }
+                Spacer()
+                
+                Button {
+                    deal()
+                } label: {
+                    Image("button")
+                }
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    VStack {
+                        Text("Player")
+                            .font(.headline)
+                            .padding(.bottom, 10.0)
+                        Text(String(playerscore))
+                            .font(.largeTitle)
+                    }
+                    Spacer()
+                    
+                    VStack {
+                        Text("CPU")
+                            .font(.headline)
+                            .padding(.bottom, 10.0)
+                        Text(String(cpuscore))
+                            .font(.largeTitle)
+                    }
+                    Spacer()
+                }
+                .foregroundColor(.white)
+                Spacer()
+                
+            }
+            .padding()
+            
+            VStack {
+                if didWin {
+                    Text("Congratulations! You win!")
+                        .font(.title)
+                        .padding()
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .padding()
+                        .onAppear {resetScoresWithDelay()}
+                } else if didLose {
+                    Text("Sorry! You Lose.")
+                        .font(.title)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                        .padding()
+                        .onAppear {resetScoresWithDelay()}
+                }
+            }
+        }
+    
+    }
+    
+    func deal() {
+        let playerRandN = Int.random(in:  2...14)
+        let cpuRandN = Int.random(in:  2...14)
+        playercard = "card" + String(playerRandN)
+        cpucard = "card" + String(cpuRandN)
+        
+        if playerRandN > cpuRandN {
+            playerscore += 1
+        } else if playerRandN < cpuRandN {
+        cpuscore += 1
+        }
+        
+        if playerscore == 10 {
+            didWin = true
+        } else if cpuscore == 10 {
+            didLose = true
+        }
+        
+    }
+    
+    func resetScores() {
+            playerscore = 0
+            cpuscore = 0
+            didWin = false
+            didLose = false
+        }
+    
+    func resetScoresWithDelay() {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                resetScores()
+            }
+        }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
+}
